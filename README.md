@@ -321,5 +321,5 @@ Advanced form validation
 CI/CD pipeline
 Production deployment with a real backend
 
-Built as a portfolio project demonstrating modern React development, state management, REST API integration, responsive UI development, and automated testing.
+
 
