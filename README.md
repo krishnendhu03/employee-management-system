@@ -251,7 +251,7 @@ Make sure the following are installed:
 Node.js
 npm
  1. Clone the repository
-    git clone <YOUR_GITHUB_REPOSITORY_URL>
+    
  2. Navigate to the project
     cd employee-management-system
  3. Install dependencies
@@ -320,30 +320,6 @@ Department management
 Advanced form validation
 CI/CD pipeline
 Production deployment with a real backend
-Screenshots
-Dashboard
-
-Add the final dashboard screenshot here.
-
-Employee List
-
-Add the final employee listing screenshot here.
-
-Add Employee
-
-Add the final Add Employee screenshot here.
-
-Edit Employee
-
-Add the final Edit Employee screenshot here.
-
-View Employee
-
-Add the final View Employee screenshot here.
-
-Author
-
-Krishnendhu
 
 Built as a portfolio project demonstrating modern React development, state management, REST API integration, responsive UI development, and automated testing.
 
