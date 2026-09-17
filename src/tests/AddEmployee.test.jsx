@@ -97,16 +97,19 @@ describe("AddEmployee", () => {
   test("submits valid employee data successfully", async () => {
     const user = userEvent.setup();
 
+    const createdEmployee = {
+      id: 4,
+      name: "Alice",
+      email: "alice@test.com",
+      department: "IT",
+      designation: "Frontend Developer",
+      salary: "80000",
+      status: "Active",
+    };
+
+    // Supabase returns the inserted row as an array
     api.post.mockResolvedValue({
-      data: {
-        id: 4,
-        name: "Alice",
-        email: "alice@test.com",
-        department: "IT",
-        designation: "Frontend Developer",
-        salary: "80000",
-        status: "Active",
-      },
+      data: [createdEmployee],
     });
 
     renderAddEmployee();
@@ -162,6 +165,11 @@ describe("AddEmployee", () => {
           designation: "Frontend Developer",
           salary: "80000",
           status: "Active",
+        },
+        {
+          headers: {
+            Prefer: "return=representation",
+          },
         }
       );
     });

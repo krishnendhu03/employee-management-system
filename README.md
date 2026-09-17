@@ -1,8 +1,9 @@
-1. Employee Management System
+Employee Management System
 
-A responsive Employee Management System built with React.js and Redux Toolkit. The application provides a complete employee CRUD workflow with search, filtering, sorting, pagination, dashboard analytics, API integration, loading states, error handling, and automated testing.
+A responsive Employee Management System built with React.js, Redux Toolkit, Axios, and Supabase. The application provides a complete employee CRUD workflow with search, filtering, sorting, pagination, dashboard analytics, REST API integration, loading states, error handling, and automated testing.
 
-2. Features
+1. Features
+
 Employee Management
 
 - View all employees
@@ -13,7 +14,7 @@ Employee Management
 - Form validation
 - Active/Inactive employee status
 
-3. Employee Listing
+Employee Listing
 
 - Search employees by:
   - Name
@@ -21,7 +22,8 @@ Employee Management
   - Department
   - Designation
   - Salary
-- Filter by employee status
+
+ Filter by employee status
 - Sort by:
   - Name
   - Email
@@ -33,7 +35,7 @@ Employee Management
 - Formatted salary display using Indian currency format
 - Status badges for Active and Inactive employees
 
-4. Dashboard
+2. Dashboard
 
 The dashboard provides an overview of employee data:
 
@@ -47,7 +49,7 @@ The dashboard provides an overview of employee data:
 - Quick summary
 - Total salary
 
-5. User Experience
+3. User Experience
 
 - Loading indicators
 - API error handling
@@ -57,9 +59,9 @@ The dashboard provides an overview of employee data:
 - Responsive layout
 - Accessible form labels and controls
 
-6. Tech Stack
+4. Tech Stack
 
-  Frontend
+Frontend
 
 - React.js
 - JavaScript (ES6+)
@@ -67,34 +69,36 @@ The dashboard provides an overview of employee data:
 - CSS3
 - React Router
 
-  State Management
+State Management
 
 - Redux Toolkit
 - Redux Async Thunks
 
-  API & Data
+API & Data
 
 - Axios
-- JSON Server
+- Supabase
+- PostgreSQL
 - REST API integration
 
-  Testing
+Testing
 
 - Jest
 - React Testing Library
 - Jest DOM
 - User Event
 
-  Development Tools
+Development Tools
 
 - Vite
 - Git
 - GitHub
 - VS Code
 
-7. Project Architecture
+5. Project Architecture
 
 The application follows a component-based architecture with centralized state management and a dedicated API service.
+
 
 React Components
        |
@@ -111,12 +115,13 @@ Async Thunks
 Axios API Service
        |
        v
-REST API
+Supabase REST API
        |
        v
-JSON Server
+PostgreSQL Database
 
-8. Folder Structure
+6. Folder Structure
+
 employee-management-system/
 │
 ├── public/
@@ -156,14 +161,14 @@ employee-management-system/
 │   ├── main.jsx
 │   └── setupTests.js
 │
-├── db.json
+├── .gitignore
 ├── babel.config.cjs
 ├── jest.config.cjs
 ├── package.json
 ├── vite.config.js
 └── README.md
 
-9. Redux State Management
+7. Redux State Management
 
 Employee collection data is managed using Redux Toolkit.
 
@@ -173,7 +178,7 @@ employees
 loading
 error
 
-CRUD operations are implemented using Redux Toolkit's createAsyncThunk:
+8. CRUD operations are implemented using Redux Toolkit's createAsyncThunk:
 
 fetchEmployees
 addEmployee
@@ -190,29 +195,52 @@ Error state
 
 This keeps API-related state transitions centralized and predictable.
 
-10. API Integration
+9. API Integration
 
 Axios is configured through a dedicated API service:
 
 src/services/api.js
 
-The application communicates with the following REST endpoints:
+The application communicates with the Supabase REST API using the following operations:
 
-GET    /employees
-POST   /employees
-PUT    /employees/:id
-DELETE /employees/:id
-GET    /employees/:id
+| Operation       | Endpoint                      |
+|                 |                               |
+| Get employees   | GET /employees                |
+| Add employee    | POST /employees               |
+| Update employee | PATCH /employees?id=eq.<id>   |
+| Delete employee | DELETE /employees?id=eq.<id>  |
+| Get employee    | GET /employees?id=eq.<id>     |
 
-JSON Server is used as a lightweight mock REST API for development and demonstration purposes.
+Supabase provides the PostgreSQL database and REST API used by the application.
+
+10. Database
+
+The application uses a Supabase PostgreSQL table named:
+
+employees
+
+The table contains:
+
+Column	    Type
+id	        int8
+name	      text
+email	      text
+department	text
+designation	text
+salary	    numeric
+status	    text
+
+Row Level Security (RLS) is enabled for the table with policies configured for the application's demo CRUD workflow.
+
+This project uses sample employee data for demonstration purposes. Public CRUD policies should not be used for production applications containing real employee information without appropriate authentication and authorization.
 
 11. Testing
 
 The project includes automated tests using Jest and React Testing Library.
-
-Current test coverage includes:
-
 Component Tests
+
+The test suite covers:
+
 Employee card rendering
 Employee listing
 Search functionality
@@ -238,6 +266,7 @@ Delete employee successfully
 Test Result
 Test Suites: 5 passed, 5 total
 Tests:       20 passed, 20 total
+Snapshots:   0 total
 
 Run the test suite with:
 
@@ -250,29 +279,23 @@ Make sure the following are installed:
 
 Node.js
 npm
- 1. Clone the repository
-    
- 2. Navigate to the project
-    cd employee-management-system
- 3. Install dependencies
-    npm install
- 4. Start JSON Server
+Git
+1. Clone the repository
+git clone <https://github.com/krishnendhu03/employee-management-system>
+2. Navigate to the project
+cd employee-management-system
+3. Install dependencies
+npm install
+4. Configure environment variables
 
-Open a terminal and run:
+Create a .env file in the project root:
 
-npx json-server --watch db.json --port 3001
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_publishable_key
 
-On Windows PowerShell, if npx execution is restricted, use:
+Use the Supabase project URL and publishable key from your Supabase project.
 
-npx.cmd json-server --watch db.json --port 3001
-
-The API will run at:
-
-http://localhost:3001
 5. Start the React application
-
-Open another terminal and run:
-
 npm run dev
 
 The application will be available at the local Vite development URL shown in the terminal.
@@ -295,6 +318,8 @@ Redux Toolkit state management
 Redux asynchronous thunks
 REST API integration
 Axios API abstraction
+Supabase integration
+PostgreSQL database integration
 React Router navigation
 Controlled form components
 Client-side validation
@@ -306,20 +331,28 @@ Automated component testing
 Redux async thunk testing
 Responsive CSS
 Git-based development workflow
-Future Improvements
 
-14. Possible future enhancements include:
+14. Production Build
 
-Authentication and role-based access
-Backend API using Spring Boot or Node.js
-Relational database integration
+Create a production build with:
+
+npm run build
+
+Preview the production build locally with:
+
+npm run preview
+
+15. Future Improvements
+
+Possible future enhancements include:
+
+Authentication and role-based access control
 Server-side pagination
 Server-side filtering and sorting
 Employee profile images
 Department management
 Advanced form validation
 CI/CD pipeline
-Production deployment with a real backend
-
-
-
+Production-grade authorization and database policies
+Application monitoring and error logging
+Production deployment

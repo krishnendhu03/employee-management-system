@@ -47,7 +47,7 @@ describe("EmployeeCard", () => {
     ).toBeInTheDocument();
 
     expect(
-        screen.getByText(/65,000/)
+      screen.getByText(/65,000/)
     ).toBeInTheDocument();
 
     expect(

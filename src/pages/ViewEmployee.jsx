@@ -15,14 +15,19 @@ export default function ViewEmployee() {
   }, []);
 
   async function loadEmployee() {
-    try {
-      const res = await api.get("/employees/" + id);
-      setEmployee(res.data);
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to load employee.");
+  try {
+    const res = await api.get(`/employees?id=eq.${id}`);
+
+    if (res.data.length === 0) {
+      throw new Error("Employee not found.");
     }
+
+    setEmployee(res.data[0]);
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to load employee.");
   }
+}
 
   if (!employee) {
     return (

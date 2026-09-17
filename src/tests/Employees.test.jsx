@@ -20,7 +20,7 @@ import {
 
 import Employees from "../pages/Employees";
 
-import employeeReducer from "../redux/employeeSlice";
+import employeeReducer from "../redux/employeeslice";
 
 import api from "../services/api";
 
@@ -273,7 +273,7 @@ describe("Employees page", () => {
       expect(
         api.delete
       ).toHaveBeenCalledWith(
-        "/employees/1"
+        "/employees?id=eq.1"
       );
     });
 

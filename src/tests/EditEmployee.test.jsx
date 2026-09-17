@@ -20,7 +20,7 @@ import {
 
 import EditEmployee from "../pages/EditEmployee";
 
-import employeeReducer from "../redux/employeeSlice";
+import employeeReducer from "../redux/employeeslice";
 
 import api from "../services/api";
 
@@ -94,8 +94,9 @@ describe("EditEmployee", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
+    // Supabase returns rows as an array
     api.get.mockResolvedValue({
-      data: employee,
+      data: [employee],
     });
   });
 
@@ -146,7 +147,7 @@ describe("EditEmployee", () => {
     ).toHaveValue(65000);
 
     expect(api.get).toHaveBeenCalledWith(
-      "/employees/1"
+      "/employees?id=eq.1"
     );
   });
 
@@ -185,7 +186,7 @@ describe("EditEmployee", () => {
     );
 
     expect(
-      api.put
+      api.patch
     ).not.toHaveBeenCalled();
   });
 
@@ -193,11 +194,14 @@ describe("EditEmployee", () => {
   test("updates employee successfully", async () => {
     const user = userEvent.setup();
 
-    api.put.mockResolvedValue({
-      data: {
-        ...employee,
-        name: "John Updated",
-      },
+    const updatedEmployee = {
+      ...employee,
+      name: "John Updated",
+    };
+
+    // Supabase returns the updated row as an array
+    api.patch.mockResolvedValue({
+      data: [updatedEmployee],
     });
 
     renderEditEmployee();
@@ -230,17 +234,21 @@ describe("EditEmployee", () => {
     );
 
     await waitFor(() => {
-      expect(api.put).toHaveBeenCalledWith(
-        "/employees/1",
+      expect(api.patch).toHaveBeenCalledWith(
+        "/employees?id=eq.1",
         {
           id: 1,
           name: "John Updated",
           email: "john@test.com",
           department: "IT",
-          designation:
-            "Frontend Developer",
+          designation: "Frontend Developer",
           salary: 65000,
           status: "Active",
+        },
+        {
+          headers: {
+            Prefer: "return=representation",
+          },
         }
       );
     });
