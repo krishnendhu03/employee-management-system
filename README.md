@@ -356,3 +356,8 @@ CI/CD pipeline
 Production-grade authorization and database policies
 Application monitoring and error logging
 Production deployment
+
+16. Links
+
+- [Live Demo](https://krishnendhu03.github.io/employee-management-system/employees)
+- [GitHub Repository](https://github.com/krishnendhu03/employee-management-system)
