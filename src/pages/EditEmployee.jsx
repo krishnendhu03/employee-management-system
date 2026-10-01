@@ -11,7 +11,7 @@ import Navbar from "../components/Navbar";
 
 import {
   updateEmployee,
-} from "../redux/employeeSlice";
+} from "../redux/employeeslice";
 
 import api from "../services/api";
 

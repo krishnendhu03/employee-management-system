@@ -423,5 +423,5 @@ Production deployment
 
 17. Links
 
-- [Live Demo]
+- [Live Demo](https://krishnendhu03.github.io/employee-management-system/)
 - [GitHub Repository](https://github.com/krishnendhu03/employee-management-system)
