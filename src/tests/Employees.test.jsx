@@ -273,7 +273,7 @@ describe("Employees page", () => {
       expect(
         api.delete
       ).toHaveBeenCalledWith(
-        "/employees?id=eq.1"
+        "/employees/1"
       );
     });
 

@@ -46,13 +46,9 @@ export default function EditEmployee() {
       try {
         setLoading(true);
 
-        const response = await api.get(`/employees?id=eq.${id}`);
+        const response = await api.get(`/employees/${id}`);
 
-         if (response.data.length === 0) {
-            throw new Error("Employee not found.");
-         }
-
-      setEmployee(response.data[0]);
+      setEmployee(response.data);
          } catch (error) {
            console.error(
              "Load employee error:",

@@ -1,0 +1,17 @@
+{
+  "name": "employee-management-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Employee Management System",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.117.2",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.5",
+    "express": "^5.2.1"
+  }
+}

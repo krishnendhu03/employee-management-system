@@ -20,13 +20,9 @@ export const addEmployee = createAsyncThunk(
   "employee/addEmployee",
   async (employee, { rejectWithValue }) => {
     try {
-      const response = await api.post("/employees", employee, {
-        headers: {
-          Prefer: "return=representation",
-        },
-      });
+      const response = await api.post("/employees", employee);
 
-      return response.data[0];
+      return response.data;
     } catch (error) {
       console.error("Add employee error:", error);
       return rejectWithValue("Failed to add employee.");
@@ -40,16 +36,11 @@ export const updateEmployee = createAsyncThunk(
   async ({ id, employee }, { rejectWithValue }) => {
     try {
       const response = await api.patch(
-        `/employees?id=eq.${id}`,
-        employee,
-        {
-          headers: {
-            Prefer: "return=representation",
-          },
-        }
+        `/employees/${id}`,
+        employee
       );
 
-      return response.data[0];
+      return response.data;
     } catch (error) {
       console.error("Update employee error:", error);
       return rejectWithValue("Failed to update employee.");
@@ -62,7 +53,7 @@ export const deleteEmployee = createAsyncThunk(
   "employee/deleteEmployee",
   async (id, { rejectWithValue }) => {
     try {
-      await api.delete(`/employees?id=eq.${id}`);
+      await api.delete(`/employees/${id}`);
       return id;
     } catch (error) {
       console.error("Delete employee error:", error);

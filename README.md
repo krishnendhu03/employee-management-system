@@ -1,6 +1,6 @@
 Employee Management System
 
-A responsive Employee Management System built with React.js, Redux Toolkit, Axios, and Supabase. The application provides a complete employee CRUD workflow with search, filtering, sorting, pagination, dashboard analytics, REST API integration, loading states, error handling, and automated testing.
+A responsive full-stack Employee Management System built with React.js, Redux Toolkit, Axios, Node.js, Express.js, and Supabase PostgreSQL. The application provides a complete employee CRUD workflow with search, filtering, sorting, pagination, dashboard analytics, REST API integration, loading states, error handling, and automated testing.
 
 1. Features
 
@@ -77,9 +77,11 @@ State Management
 API & Data
 
 - Axios
+- Node.js
+- Express.js
+- RESTful APIs
 - Supabase
 - PostgreSQL
-- REST API integration
 
 Testing
 
@@ -97,7 +99,7 @@ Development Tools
 
 5. Project Architecture
 
-The application follows a component-based architecture with centralized state management and a dedicated API service.
+The application follows a component-based architecture with centralized state management, a dedicated Axios API service, and a Node.js/Express.js backend for RESTful API operations.
 
 
 React Components
@@ -115,7 +117,10 @@ Async Thunks
 Axios API Service
        |
        v
-Supabase REST API
+Node.js + Express.js 
+       |
+       v
+   Supabase 
        |
        v
 PostgreSQL Database
@@ -123,6 +128,11 @@ PostgreSQL Database
 6. Folder Structure
 
 employee-management-system/
+│
+├── backend/
+│   ├── package.json
+│   ├── package-lock.json
+│   └── server.js
 │
 ├── public/
 │
@@ -201,19 +211,46 @@ Axios is configured through a dedicated API service:
 
 src/services/api.js
 
-The application communicates with the Supabase REST API using the following operations:
+The React frontend communicates with the Node.js and Express.js backend through RESTful APIs.
 
-| Operation       | Endpoint                      |
-|                 |                               |
-| Get employees   | GET /employees                |
-| Add employee    | POST /employees               |
-| Update employee | PATCH /employees?id=eq.<id>   |
-| Delete employee | DELETE /employees?id=eq.<id>  |
-| Get employee    | GET /employees?id=eq.<id>     |
+The Express backend handles employee CRUD operations and communicates with Supabase for persistent PostgreSQL data storage.
 
-Supabase provides the PostgreSQL database and REST API used by the application.
+| Operation       | Method | Endpoint                  |
+|-----------------|--------|---------------------------|
+| Get employees   | GET    | /api/employees            |
+| Get employee    | GET    | /api/employees/:id        |
+| Add employee    | POST   | /api/employees            |
+| Update employee | PATCH  | /api/employees/:id        |
+| Delete employee | DELETE | /api/employees/:id        |
 
-10. Database
+Request flow:
+
+React → Redux Toolkit → Axios → Express.js → Supabase → PostgreSQL
+
+10. Backend
+
+The backend is implemented using Node.js and Express.js.
+
+Responsibilities include:
+
+- Handling REST API requests
+- Defining employee CRUD routes
+- Communicating with Supabase
+- Returning API responses to the React frontend
+- Handling API errors
+- Managing environment-based configuration
+
+Backend API endpoints:
+
+GET    /api/employees
+GET    /api/employees/:id
+POST   /api/employees
+PATCH  /api/employees/:id
+DELETE /api/employees/:id
+
+The backend runs independently from the React development server.
+
+11. Database
 
 The application uses a Supabase PostgreSQL table named:
 
@@ -221,20 +258,21 @@ employees
 
 The table contains:
 
-Column	    Type
-id	        int8
-name	      text
-email	      text
-department	text
-designation	text
-salary	    numeric
-status	    text
+| Column      | Type    |
+|-------------|---------|
+| id          | int8    |
+| name        | text    |
+| email       | text    |
+| department  | text    |
+| designation | text    |
+| salary      | numeric |
+| status      | text    |
 
 Row Level Security (RLS) is enabled for the table with policies configured for the application's demo CRUD workflow.
 
 This project uses sample employee data for demonstration purposes. Public CRUD policies should not be used for production applications containing real employee information without appropriate authentication and authorization.
 
-11. Testing
+12. Testing
 
 The project includes automated tests using Jest and React Testing Library.
 Component Tests
@@ -272,50 +310,75 @@ Run the test suite with:
 
 npm test
 
-12. Getting Started
+13. Getting Started
 
 Prerequisites
+
 Make sure the following are installed:
 
-Node.js
-npm
-Git
+- Node.js
+- npm
+- Git
+
 1. Clone the repository
+
 git clone <https://github.com/krishnendhu03/employee-management-system>
+
 2. Navigate to the project
+
 cd employee-management-system
-3. Install dependencies
+
+3. Install frontend dependencies
+
 npm install
-4. Configure environment variables
 
-Create a .env file in the project root:
+4. Install backend dependencies
 
-VITE_SUPABASE_URL=your_supabase_project_url
-VITE_SUPABASE_ANON_KEY=your_supabase_publishable_key
+cd backend
+npm install
 
-Use the Supabase project URL and publishable key from your Supabase project.
+5. Configure backend environment variables
 
-5. Start the React application
+Create a .env file inside the backend directory:
+
+backend/.env
+
+Add:
+
+SUPABASE_URL=supabase_project_url
+SUPABASE_ANON_KEY=supabase_publishable_key
+
+Do not commit the actual .env file to GitHub.
+
+6. Start the backend
+
+From the backend directory:
+
+npm run dev
+
+The Express API runs on:
+
+http://localhost:5000
+
+7. Start the frontend
+
+Open another terminal in the project root:
+
 npm run dev
 
 The application will be available at the local Vite development URL shown in the terminal.
 
-Application Routes
-Route	Description
-/	Dashboard
-/employees	Employee listing
-/add	Add employee
-/edit/:id	Edit employee
-/view/:id	View employee details
-Key Engineering Practices
 
-13. This project demonstrates:
+14. This project demonstrates:
 
 Component-based React development
 React Hooks
 Functional components
 Redux Toolkit state management
 Redux asynchronous thunks
+Node.js backend development
+Express.js REST API development
+Frontend-backend separation
 REST API integration
 Axios API abstraction
 Supabase integration
@@ -330,9 +393,10 @@ Reusable UI components
 Automated component testing
 Redux async thunk testing
 Responsive CSS
+Environment-based configuration
 Git-based development workflow
 
-14. Production Build
+15. Production Build
 
 Create a production build with:
 
@@ -342,7 +406,7 @@ Preview the production build locally with:
 
 npm run preview
 
-15. Future Improvements
+16. Future Improvements
 
 Possible future enhancements include:
 
@@ -357,7 +421,7 @@ Production-grade authorization and database policies
 Application monitoring and error logging
 Production deployment
 
-16. Links
+17. Links
 
 - [Live Demo](https://krishnendhu03.github.io/employee-management-system/)
 - [GitHub Repository](https://github.com/krishnendhu03/employee-management-system)

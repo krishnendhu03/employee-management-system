@@ -43,9 +43,7 @@ jest.mock("react-toastify", () => ({
 
 // Mock React Router
 jest.mock("react-router-dom", () => ({
-  ...jest.requireActual(
-    "react-router-dom"
-  ),
+  ...jest.requireActual("react-router-dom"),
 
   useParams: () => ({
     id: "1",
@@ -94,9 +92,9 @@ describe("EditEmployee", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    // Supabase returns rows as an array
+    // Express API returns a single employee object
     api.get.mockResolvedValue({
-      data: [employee],
+      data: employee,
     });
   });
 
@@ -147,7 +145,7 @@ describe("EditEmployee", () => {
     ).toHaveValue(65000);
 
     expect(api.get).toHaveBeenCalledWith(
-      "/employees?id=eq.1"
+      "/employees/1"
     );
   });
 
@@ -199,9 +197,9 @@ describe("EditEmployee", () => {
       name: "John Updated",
     };
 
-    // Supabase returns the updated row as an array
+    // Express API returns the updated employee object
     api.patch.mockResolvedValue({
-      data: [updatedEmployee],
+      data: updatedEmployee,
     });
 
     renderEditEmployee();
@@ -235,7 +233,7 @@ describe("EditEmployee", () => {
 
     await waitFor(() => {
       expect(api.patch).toHaveBeenCalledWith(
-        "/employees?id=eq.1",
+        "/employees/1",
         {
           id: 1,
           name: "John Updated",
@@ -244,11 +242,6 @@ describe("EditEmployee", () => {
           designation: "Frontend Developer",
           salary: 65000,
           status: "Active",
-        },
-        {
-          headers: {
-            Prefer: "return=representation",
-          },
         }
       );
     });

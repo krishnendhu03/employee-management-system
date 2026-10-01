@@ -20,7 +20,7 @@ import {
 
 import AddEmployee from "../pages/AddEmployee";
 
-import employeeReducer from "../redux/employeeSlice";
+import employeeReducer from "../redux/employeeslice";
 
 import api from "../services/api";
 
@@ -164,15 +164,12 @@ describe("AddEmployee", () => {
           department: "IT",
           designation: "Frontend Developer",
           salary: "80000",
-          status: "Active",
-        },
-        {
-          headers: {
-            Prefer: "return=representation",
-          },
+            status: "Active",
         }
       );
-    });
+    }
+   );
+    
 
     expect(
       toast.success

@@ -12,22 +12,18 @@ export default function ViewEmployee() {
 
   useEffect(() => {
     loadEmployee();
-  }, []);
+  }, [id]);
 
   async function loadEmployee() {
-  try {
-    const res = await api.get(`/employees?id=eq.${id}`);
+    try {
+      const res = await api.get(`/employees/${id}`);
 
-    if (res.data.length === 0) {
-      throw new Error("Employee not found.");
+      setEmployee(res.data);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to load employee.");
     }
-
-    setEmployee(res.data[0]);
-  } catch (error) {
-    console.error(error);
-    toast.error("Failed to load employee.");
   }
-}
 
   if (!employee) {
     return (
@@ -45,9 +41,7 @@ export default function ViewEmployee() {
       <Navbar />
 
       <div className="container">
-
         <div className="form-container">
-
           <h2>Employee Details</h2>
 
           <p><strong>Name:</strong> {employee.name}</p>
@@ -57,12 +51,13 @@ export default function ViewEmployee() {
           <p><strong>Salary:</strong> ₹ {employee.salary}</p>
           <p><strong>Status:</strong> {employee.status}</p>
 
-          <button className="back-btn" onClick={() => navigate("/employees")}>
-  Back
-</button>
-
+          <button
+            className="back-btn"
+            onClick={() => navigate("/employees")}
+          >
+            Back
+          </button>
         </div>
-
       </div>
     </>
   );
