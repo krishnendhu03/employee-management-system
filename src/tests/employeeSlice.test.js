@@ -6,7 +6,7 @@ import employeeReducer, {
   addEmployee,
   updateEmployee,
   deleteEmployee,
-} from "../redux/employeeslice";
+} from "../redux/employeeSlice";
 
 jest.mock("../services/api");
 

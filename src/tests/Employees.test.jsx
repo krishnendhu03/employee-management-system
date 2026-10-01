@@ -20,7 +20,7 @@ import {
 
 import Employees from "../pages/Employees";
 
-import employeeReducer from "../redux/employeeslice";
+import employeeReducer from "../redux/employeeSlice";
 
 import api from "../services/api";
 
