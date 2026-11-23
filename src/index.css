@@ -92,30 +92,61 @@ select {
    Table
 ======================= */
 
-table {
+
+/* =======================
+   Table
+======================= */
+
+.employee-table-wrapper {
   width: 100%;
-  border-collapse: collapse;
+  overflow-x: auto;
   background: white;
   border-radius: 10px;
-  overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
-th,
-td {
+.employee-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  background: white;
+}
+
+.employee-table th,
+.employee-table td {
   padding: 14px;
   border-bottom: 1px solid #ddd;
   text-align: left;
+  vertical-align: middle;
+  overflow-wrap: break-word;
 }
 
-th {
+.employee-table th {
   background: #2563eb;
   color: white;
 }
 
-tr:hover {
+.employee-table tr:hover {
   background: #f5f7ff;
 }
+
+/* Keep action buttons together */
+.employee-table td:last-child {
+  white-space: nowrap;
+}
+
+.employee-table td:last-child button {
+  padding: 8px 10px;
+  margin-right: 4px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .employee-table {
+    min-width: 950px;
+  }
+}
+
 
 /* =======================
    Cards

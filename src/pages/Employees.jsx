@@ -249,7 +249,30 @@ export default function Employees() {
         />
 
         {/* Employee table */}
-        <table>
+        
+{/* Employee table */}
+<div className="employee-table-wrapper">
+  <table className="employee-table">
+    <colgroup>
+      <col style={{ width: "12%" }} />
+      <col style={{ width: "17%" }} />
+      <col style={{ width: "12%" }} />
+      <col style={{ width: "19%" }} />
+      <col style={{ width: "12%" }} />
+      <col style={{ width: "10%" }} />
+      <col style={{ width: "18%" }} />
+    </colgroup>
+
+    <thead>
+      {/* Keep your existing table header rows here */}
+    </thead>
+
+    <tbody>
+      {/* Keep your existing employee rows and empty state here */}
+    </tbody>
+  </table>
+</div>
+
           <thead>
             <tr>
 
@@ -374,7 +397,7 @@ export default function Employees() {
               </tr>
             )}
           </tbody>
-        </table>
+        
 
         {/* Pagination */}
         {totalPages > 1 && (

@@ -274,41 +274,82 @@ This project uses sample employee data for demonstration purposes. Public CRUD p
 
 12. Testing
 
-The project includes automated tests using Jest and React Testing Library.
-Component Tests
+The project includes automated testing using **Jest, React Testing Library, and Playwright** to ensure application functionality, component reliability, and end-to-end workflows.
+
+12.1 Component Testing – Jest & React Testing Library
 
 The test suite covers:
 
-Employee card rendering
-Employee listing
-Search functionality
-Employee filtering
-Sorting
-Pagination
-Add employee form
-Edit employee form
-User interactions
-Validation behavior
+- Employee card rendering
+- Employee listing
+- Search functionality
+- Employee filtering
+- Sorting
+- Pagination
+- Add employee form
+- Edit employee form
+- User interactions
+- Validation behavior
+
 Redux Tests
 
 The Redux async thunks are tested with mocked API requests.
 
 Tested operations include:
 
-Fetch employees successfully
-Handle fetch API errors
-Add employee successfully
-Update employee successfully
-Delete employee successfully
+- Fetch employees successfully
+- Handle fetch API errors
+- Add employee successfully
+- Update employee successfully
+- Delete employee successfully
 
-Test Result
-Test Suites: 5 passed, 5 total
-Tests:       20 passed, 20 total
-Snapshots:   0 total
+Jest Test Results
 
-Run the test suite with:
+- Test Suites: 5 passed, 5 total
+- Tests: 20 passed, 20 total
+- Snapshots: 0 total
+
+Run the test suite from the React application directory:
 
 npm test
+
+12.2 End-to-End Testing – Playwright
+
+Playwright is used to automate browser-based testing of the deployed Employee Management System.
+
+Test Coverage
+
+- Employee creation
+- Employee updation
+- Employee deletion
+- Delete confirmation and cancellation
+- Search functionality
+- Employee sorting (ascending and descending)
+- Pagination
+- Employee API response validation
+
+Testing Tools
+
+- Playwright
+- JavaScript
+- Chromium
+- Playwright HTML Reporter
+
+Test Execution
+
+Run all Playwright tests:
+
+npx playwright test --project=chromium
+
+Generate the HTML test report:
+
+npx playwright show-report
+
+Playwright Test Results
+
+- 8 automated tests covering CRUD, search, sorting, pagination, and API functionality.
+
+
 
 13. Getting Started
 
