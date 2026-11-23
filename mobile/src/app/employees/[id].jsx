@@ -16,10 +16,10 @@ import { useLocalSearchParams, router } from 'expo-router';
 import API from '../../services/api';
 
 export default function EditEmployeeScreen() {
-  // Get employee ID from the URL
+  // Get employee ID from URL
   const { id } = useLocalSearchParams();
 
-  // Store employee details
+  // Employee form values
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [department, setDepartment] = useState('');
@@ -29,7 +29,10 @@ export default function EditEmployeeScreen() {
 
   const [loading, setLoading] = useState(true);
 
-  // Fetch the selected employee
+  // Store email error
+  const [emailError, setEmailError] = useState('');
+
+  // Fetch selected employee
   const fetchEmployee = async () => {
     try {
       const response = await API.get(`/api/employees/${id}`);
@@ -55,12 +58,12 @@ export default function EditEmployeeScreen() {
   }, [id]);
 
   // Update employee details
-  
   const handleUpdateEmployee = async () => {
-    
-  console.log('UPDATE FUNCTION STARTED');
+    console.log('UPDATE FUNCTION STARTED');
 
-  // Existing validation continues here
+    setEmailError('');
+
+    // Validate empty fields
     if (
       !name.trim() ||
       !email.trim() ||
@@ -72,8 +75,20 @@ export default function EditEmployeeScreen() {
       return;
     }
 
-    if (!Number.isFinite(Number(salary)) || Number(salary) <= 0) {
-      Alert.alert('Invalid Salary', 'Enter a valid salary.');
+    // Validate email format
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(email.trim())) {
+      setEmailError('Please enter a valid email address.');
+      return;
+    }
+
+    // Validate salary
+    if (!/^\d+$/.test(salary.trim()) || Number(salary) <= 0) {
+      Alert.alert(
+        'Invalid Salary',
+        'Salary must be a positive whole number.'
+      );
       return;
     }
 
@@ -86,21 +101,41 @@ export default function EditEmployeeScreen() {
         salary: Number(salary),
         status,
       };
-       console.log('Sending update:', employeeData);
+
+      console.log('Sending update:', employeeData);
+
       await API.patch(`/api/employees/${id}`, employeeData);
+
       console.log('UPDATE SUCCESS');
+
       Alert.alert('Success', 'Employee updated successfully!', [
         {
           text: 'OK',
           onPress: () => router.back(),
         },
       ]);
+
     } catch (error) {
       console.log('Update Employee Error:', error);
-      Alert.alert('Error', 'Unable to update employee.');
+      console.log('API response:', error.response?.data);
+
+      // Handle duplicate email
+      if (error.response?.status === 409) {
+        setEmailError(
+          'This email address already exists. Please use another email.'
+        );
+        return;
+      }
+
+      Alert.alert(
+        'Error',
+        error.response?.data?.error ||
+        'Unable to update employee.'
+      );
     }
   };
-  
+
+  // Loading screen
   if (loading) {
     return (
       <View style={styles.center}>
@@ -119,37 +154,61 @@ export default function EditEmployeeScreen() {
       </Text>
 
       <View style={styles.formCard}>
+
+        {/* Employee Name */}
         <Text style={styles.label}>Employee Name</Text>
+
         <TextInput
           style={styles.input}
           value={name}
           onChangeText={setName}
         />
 
+        {/* Email */}
         <Text style={styles.label}>Email</Text>
+
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            emailError ? styles.inputError : null,
+          ]}
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(value) => {
+            setEmail(value);
+            setEmailError('');
+          }}
           keyboardType="email-address"
           autoCapitalize="none"
         />
 
+        {/* Email Error */}
+        {emailError ? (
+          <Text style={styles.errorText}>
+            {emailError}
+          </Text>
+        ) : null}
+
+        {/* Department */}
         <Text style={styles.label}>Department</Text>
+
         <TextInput
           style={styles.input}
           value={department}
           onChangeText={setDepartment}
         />
 
+        {/* Designation */}
         <Text style={styles.label}>Designation</Text>
+
         <TextInput
           style={styles.input}
           value={designation}
           onChangeText={setDesignation}
         />
 
+        {/* Salary */}
         <Text style={styles.label}>Salary</Text>
+
         <TextInput
           style={styles.input}
           value={salary}
@@ -157,6 +216,7 @@ export default function EditEmployeeScreen() {
           keyboardType="numeric"
         />
 
+        {/* Status */}
         <Text style={styles.label}>Status</Text>
 
         <View style={styles.statusContainer}>
@@ -181,41 +241,48 @@ export default function EditEmployeeScreen() {
           ))}
         </View>
 
+        {/* Update Button */}
         <Pressable
-  style={styles.submitButton}
-  onPress={handleUpdateEmployee}
->
-  <Text style={styles.submitText}>
-    Update Employee
-  </Text>
-</Pressable>
+          style={styles.submitButton}
+          onPress={handleUpdateEmployee}
+        >
+          <Text style={styles.submitText}>
+            Update Employee
+          </Text>
+        </Pressable>
+
       </View>
     </ScrollView>
   );
 }
 
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F3F6FA',
     padding: 16,
   },
+
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     gap: 12,
   },
+
   title: {
     fontSize: 25,
     fontWeight: 'bold',
     color: '#1F2937',
   },
+
   subtitle: {
     color: '#64748B',
     marginTop: 5,
     marginBottom: 18,
   },
+
   formCard: {
     backgroundColor: '#FFFFFF',
     padding: 18,
@@ -223,6 +290,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     elevation: 2,
   },
+
   label: {
     fontSize: 14,
     fontWeight: '600',
@@ -230,6 +298,7 @@ const styles = StyleSheet.create({
     marginBottom: 7,
     marginTop: 12,
   },
+
   input: {
     borderWidth: 1,
     borderColor: '#CBD5E1',
@@ -238,27 +307,43 @@ const styles = StyleSheet.create({
     fontSize: 14,
     backgroundColor: '#FFFFFF',
   },
+
+  inputError: {
+    borderColor: '#DC2626',
+  },
+
+  errorText: {
+    color: '#DC2626',
+    fontSize: 13,
+    marginTop: 6,
+  },
+
   statusContainer: {
     flexDirection: 'row',
     gap: 12,
     marginTop: 5,
   },
+
   statusButton: {
     paddingVertical: 10,
     paddingHorizontal: 24,
     borderRadius: 8,
     backgroundColor: '#E2E8F0',
   },
+
   selectedStatus: {
     backgroundColor: '#2563EB',
   },
+
   statusText: {
     color: '#334155',
     fontWeight: '600',
   },
+
   selectedStatusText: {
     color: '#FFFFFF',
   },
+
   submitButton: {
     backgroundColor: '#2563EB',
     padding: 15,
@@ -266,6 +351,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 25,
   },
+
   submitText: {
     color: '#FFFFFF',
     fontWeight: 'bold',
