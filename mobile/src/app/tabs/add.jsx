@@ -112,20 +112,27 @@ export default function AddEmployeeScreen() {
       setSalary('');
       setStatus('Active');
 
-    } catch (error) {
-      console.log('5. API ERROR:', error);
-      console.log(
-        'API response:',
-        error.response?.data
-      );
+    } 
+ catch (error) {
+  console.log('5. API ERROR:', error);
+  console.log('API response:', error.response?.data);
 
-      Alert.alert(
-        'Error',
-        error.response?.data?.error ||
-        error.message ||
-        'Unable to save employee.'
-      );
-    }
+  if (error.response?.status === 409) {
+    Alert.alert(
+      'Email Already Exists',
+      'An employee with this email address already exists. Please use a different email.'
+    );
+    return;
+  }
+
+  Alert.alert(
+    'Error',
+    error.response?.data?.error ||
+    error.message ||
+    'Unable to save employee.'
+  );
+}
+
   };
 
   return (
