@@ -22,9 +22,14 @@ export default function AddEmployeeScreen() {
   const [salary, setSalary] = useState('');
   const [status, setStatus] = useState('Active');
 
+  // Store email error message
+  const [emailError, setEmailError] = useState('');
+
   // Save employee function
   const handleSaveEmployee = async () => {
     console.log('1. SAVE FUNCTION STARTED');
+
+    setEmailError('');
 
     // Validate empty fields
     if (
@@ -45,10 +50,7 @@ export default function AddEmployeeScreen() {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailPattern.test(email.trim())) {
-      Alert.alert(
-        'Invalid Email',
-        'Please enter a valid email address.'
-      );
+      setEmailError('Please enter a valid email address.');
       return;
     }
 
@@ -96,7 +98,11 @@ export default function AddEmployeeScreen() {
         '4. Backend response:',
         response.data
       );
-      console.log('5. Backend status:', response.status);
+
+      console.log(
+        '5. Backend status:',
+        response.status
+      );
 
       // Show success message
       Alert.alert(
@@ -111,28 +117,31 @@ export default function AddEmployeeScreen() {
       setDesignation('');
       setSalary('');
       setStatus('Active');
+      setEmailError('');
 
-    } 
- catch (error) {
-  console.log('5. API ERROR:', error);
-  console.log('API response:', error.response?.data);
+    } catch (error) {
+      console.log('API ERROR:', error);
+      console.log(
+        'API response:',
+        error.response?.data
+      );
 
-  if (error.response?.status === 409) {
-    Alert.alert(
-      'Email Already Exists',
-      'An employee with this email address already exists. Please use a different email.'
-    );
-    return;
-  }
+      // Handle duplicate email
+      if (error.response?.status === 409) {
+        setEmailError(
+          'This email address already exists. Please use another email.'
+        );
+        return;
+      }
 
-  Alert.alert(
-    'Error',
-    error.response?.data?.error ||
-    error.message ||
-    'Unable to save employee.'
-  );
-}
-
+      // Handle other errors
+      Alert.alert(
+        'Error',
+        error.response?.data?.error ||
+        error.message ||
+        'Unable to save employee.'
+      );
+    }
   };
 
   return (
@@ -144,6 +153,7 @@ export default function AddEmployeeScreen() {
       </Text>
 
       <View style={styles.formCard}>
+
         {/* Employee Name */}
         <Text style={styles.label}>
           Employee Name
@@ -162,13 +172,26 @@ export default function AddEmployeeScreen() {
         </Text>
 
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            emailError ? styles.inputError : null,
+          ]}
           placeholder="Enter email address"
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(value) => {
+            setEmail(value);
+            setEmailError('');
+          }}
           keyboardType="email-address"
           autoCapitalize="none"
         />
+
+        {/* Email Error Message */}
+        {emailError ? (
+          <Text style={styles.errorText}>
+            {emailError}
+          </Text>
+        ) : null}
 
         {/* Department */}
         <Text style={styles.label}>
@@ -243,6 +266,7 @@ export default function AddEmployeeScreen() {
             Save Employee
           </Text>
         </Pressable>
+
       </View>
     </ScrollView>
   );
@@ -291,6 +315,16 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: 14,
     backgroundColor: '#FFFFFF',
+  },
+
+  inputError: {
+    borderColor: '#DC2626',
+  },
+
+  errorText: {
+    color: '#DC2626',
+    fontSize: 13,
+    marginTop: 6,
   },
 
   statusContainer: {
