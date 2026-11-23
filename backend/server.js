@@ -118,12 +118,15 @@ app.post("/api/employees", async (req, res) => {
     // Check whether email already exists
 console.log("Checking duplicate email:", email);
 
+
 const { data: existingEmployee, error: checkError } =
   await supabase
     .from("employees")
     .select("id, email")
     .ilike("email", email)
+    .limit(1)
     .maybeSingle();
+
 
 console.log("Existing employee:", existingEmployee);
 console.log("Duplicate check error:", checkError);
