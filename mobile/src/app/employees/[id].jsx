@@ -10,6 +10,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
+  Modal,
 } from 'react-native';
 
 import { useLocalSearchParams, router } from 'expo-router';
@@ -31,6 +32,7 @@ export default function EditEmployeeScreen() {
 
   // Store email error
   const [emailError, setEmailError] = useState('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // Fetch selected employee
   const fetchEmployee = async () => {
@@ -108,12 +110,7 @@ export default function EditEmployeeScreen() {
 
       console.log('UPDATE SUCCESS');
 
-      Alert.alert('Success', 'Employee updated successfully!', [
-        {
-          text: 'OK',
-          onPress: () => router.back(),
-        },
-      ]);
+     setShowSuccessModal(true);
 
     } catch (error) {
       console.log('Update Employee Error:', error);
@@ -252,6 +249,38 @@ export default function EditEmployeeScreen() {
         </Pressable>
 
       </View>
+      <Modal
+  visible={showSuccessModal}
+  transparent={true}
+  animationType="fade"
+  onRequestClose={() => setShowSuccessModal(false)}
+>
+  <View style={styles.modalOverlay}>
+    <View style={styles.modalCard}>
+      <Text style={styles.successIcon}>✓</Text>
+
+      <Text style={styles.modalTitle}>
+        Success!
+      </Text>
+
+      <Text style={styles.modalMessage}>
+        Employee updated successfully.
+      </Text>
+
+      <Pressable
+        style={styles.modalButton}
+       onPress={() => {
+  setShowSuccessModal(false);
+  router.replace('/tabs/explore');
+}}
+      >
+        <Text style={styles.modalButtonText}>
+          OK
+        </Text>
+      </Pressable>
+    </View>
+  </View>
+</Modal>
     </ScrollView>
   );
 }
@@ -356,5 +385,55 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: 'bold',
     fontSize: 16,
+    modalOverlay: {
+  flex: 1,
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  justifyContent: 'center',
+  alignItems: 'center',
+  padding: 20,
+},
+
+modalCard: {
+  backgroundColor: '#FFFFFF',
+  width: '100%',
+  maxWidth: 350,
+  padding: 25,
+  borderRadius: 15,
+  alignItems: 'center',
+},
+
+successIcon: {
+  fontSize: 42,
+  color: '#16A34A',
+  fontWeight: 'bold',
+},
+
+modalTitle: {
+  fontSize: 22,
+  fontWeight: 'bold',
+  color: '#1F2937',
+  marginTop: 10,
+},
+
+modalMessage: {
+  fontSize: 15,
+  color: '#64748B',
+  marginTop: 10,
+  textAlign: 'center',
+},
+
+modalButton: {
+  backgroundColor: '#2563EB',
+  paddingVertical: 12,
+  paddingHorizontal: 40,
+  borderRadius: 8,
+  marginTop: 22,
+},
+
+modalButtonText: {
+  color: '#FFFFFF',
+  fontWeight: 'bold',
+  fontSize: 15,
+},
   },
 });
