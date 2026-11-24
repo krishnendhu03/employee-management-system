@@ -28,10 +28,13 @@ export default function EditEmployeeScreen() {
   const [salary, setSalary] = useState('');
   const [status, setStatus] = useState('Active');
 
+  // Loading state
   const [loading, setLoading] = useState(true);
 
-  // Store email error
+  // Email error state
   const [emailError, setEmailError] = useState('');
+
+  // Success popup state
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // Fetch selected employee
@@ -47,8 +50,9 @@ export default function EditEmployeeScreen() {
       setDesignation(employee.designation);
       setSalary(String(employee.salary));
       setStatus(employee.status);
+
     } catch (error) {
-      console.log('Fetch Employee Error:', error.message);
+      console.log('Fetch Employee Error:', error);
       Alert.alert('Error', 'Unable to load employee details.');
     } finally {
       setLoading(false);
@@ -110,7 +114,8 @@ export default function EditEmployeeScreen() {
 
       console.log('UPDATE SUCCESS');
 
-     setShowSuccessModal(true);
+      // Show success popup
+      setShowSuccessModal(true);
 
     } catch (error) {
       console.log('Update Employee Error:', error);
@@ -143,150 +148,164 @@ export default function EditEmployeeScreen() {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Edit Employee</Text>
+    <View style={styles.screen}>
 
-      <Text style={styles.subtitle}>
-        Update employee information
-      </Text>
+      {/* Edit Employee Form */}
+      <ScrollView style={styles.container}>
+        <Text style={styles.title}>Edit Employee</Text>
 
-      <View style={styles.formCard}>
+        <Text style={styles.subtitle}>
+          Update employee information
+        </Text>
 
-        {/* Employee Name */}
-        <Text style={styles.label}>Employee Name</Text>
+        <View style={styles.formCard}>
 
-        <TextInput
-          style={styles.input}
-          value={name}
-          onChangeText={setName}
-        />
+          {/* Employee Name */}
+          <Text style={styles.label}>Employee Name</Text>
 
-        {/* Email */}
-        <Text style={styles.label}>Email</Text>
+          <TextInput
+            style={styles.input}
+            value={name}
+            onChangeText={setName}
+          />
 
-        <TextInput
-          style={[
-            styles.input,
-            emailError ? styles.inputError : null,
-          ]}
-          value={email}
-          onChangeText={(value) => {
-            setEmail(value);
-            setEmailError('');
-          }}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
+          {/* Email */}
+          <Text style={styles.label}>Email</Text>
 
-        {/* Email Error */}
-        {emailError ? (
-          <Text style={styles.errorText}>
-            {emailError}
-          </Text>
-        ) : null}
+          <TextInput
+            style={[
+              styles.input,
+              emailError ? styles.inputError : null,
+            ]}
+            value={email}
+            onChangeText={(value) => {
+              setEmail(value);
+              setEmailError('');
+            }}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
 
-        {/* Department */}
-        <Text style={styles.label}>Department</Text>
+          {/* Email Error */}
+          {emailError ? (
+            <Text style={styles.errorText}>
+              {emailError}
+            </Text>
+          ) : null}
 
-        <TextInput
-          style={styles.input}
-          value={department}
-          onChangeText={setDepartment}
-        />
+          {/* Department */}
+          <Text style={styles.label}>Department</Text>
 
-        {/* Designation */}
-        <Text style={styles.label}>Designation</Text>
+          <TextInput
+            style={styles.input}
+            value={department}
+            onChangeText={setDepartment}
+          />
 
-        <TextInput
-          style={styles.input}
-          value={designation}
-          onChangeText={setDesignation}
-        />
+          {/* Designation */}
+          <Text style={styles.label}>Designation</Text>
 
-        {/* Salary */}
-        <Text style={styles.label}>Salary</Text>
+          <TextInput
+            style={styles.input}
+            value={designation}
+            onChangeText={setDesignation}
+          />
 
-        <TextInput
-          style={styles.input}
-          value={salary}
-          onChangeText={setSalary}
-          keyboardType="numeric"
-        />
+          {/* Salary */}
+          <Text style={styles.label}>Salary</Text>
 
-        {/* Status */}
-        <Text style={styles.label}>Status</Text>
+          <TextInput
+            style={styles.input}
+            value={salary}
+            onChangeText={setSalary}
+            keyboardType="numeric"
+          />
 
-        <View style={styles.statusContainer}>
-          {['Active', 'Inactive'].map((item) => (
-            <Pressable
-              key={item}
-              style={[
-                styles.statusButton,
-                status === item && styles.selectedStatus,
-              ]}
-              onPress={() => setStatus(item)}
-            >
-              <Text
+          {/* Status */}
+          <Text style={styles.label}>Status</Text>
+
+          <View style={styles.statusContainer}>
+            {['Active', 'Inactive'].map((item) => (
+              <Pressable
+                key={item}
                 style={[
-                  styles.statusText,
-                  status === item && styles.selectedStatusText,
+                  styles.statusButton,
+                  status === item && styles.selectedStatus,
                 ]}
+                onPress={() => setStatus(item)}
               >
-                {item}
+                <Text
+                  style={[
+                    styles.statusText,
+                    status === item && styles.selectedStatusText,
+                  ]}
+                >
+                  {item}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+
+          {/* Update Button */}
+          <Pressable
+            style={styles.submitButton}
+            onPress={handleUpdateEmployee}
+          >
+            <Text style={styles.submitText}>
+              Update Employee
+            </Text>
+          </Pressable>
+
+        </View>
+      </ScrollView>
+
+      {/* Success Popup - Only ONE Modal */}
+      <Modal
+        visible={showSuccessModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowSuccessModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalCard}>
+
+            <Text style={styles.successIcon}>✓</Text>
+
+            <Text style={styles.modalTitle}>
+              Success!
+            </Text>
+
+            <Text style={styles.modalMessage}>
+              Employee updated successfully.
+            </Text>
+
+            <Pressable
+              style={styles.modalButton}
+              onPress={() => {
+                setShowSuccessModal(false);
+                router.replace('/tabs/explore');
+              }}
+            >
+              <Text style={styles.modalButtonText}>
+                OK
               </Text>
             </Pressable>
-          ))}
+
+          </View>
         </View>
+      </Modal>
 
-        {/* Update Button */}
-        <Pressable
-          style={styles.submitButton}
-          onPress={handleUpdateEmployee}
-        >
-          <Text style={styles.submitText}>
-            Update Employee
-          </Text>
-        </Pressable>
-
-      </View>
-      <Modal
-  visible={showSuccessModal}
-  transparent={true}
-  animationType="fade"
-  onRequestClose={() => setShowSuccessModal(false)}
->
-  <View style={styles.modalOverlay}>
-    <View style={styles.modalCard}>
-      <Text style={styles.successIcon}>✓</Text>
-
-      <Text style={styles.modalTitle}>
-        Success!
-      </Text>
-
-      <Text style={styles.modalMessage}>
-        Employee updated successfully.
-      </Text>
-
-      <Pressable
-        style={styles.modalButton}
-       onPress={() => {
-  setShowSuccessModal(false);
-  router.replace('/tabs/explore');
-}}
-      >
-        <Text style={styles.modalButtonText}>
-          OK
-        </Text>
-      </Pressable>
     </View>
-  </View>
-</Modal>
-    </ScrollView>
   );
 }
 
 // Styles
 const styles = StyleSheet.create({
+
+  screen: {
+    flex: 1,
+  },
+
   container: {
     flex: 1,
     backgroundColor: '#F3F6FA',
@@ -385,55 +404,58 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: 'bold',
     fontSize: 16,
-    modalOverlay: {
-  flex: 1,
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  justifyContent: 'center',
-  alignItems: 'center',
-  padding: 20,
-},
-
-modalCard: {
-  backgroundColor: '#FFFFFF',
-  width: '100%',
-  maxWidth: 350,
-  padding: 25,
-  borderRadius: 15,
-  alignItems: 'center',
-},
-
-successIcon: {
-  fontSize: 42,
-  color: '#16A34A',
-  fontWeight: 'bold',
-},
-
-modalTitle: {
-  fontSize: 22,
-  fontWeight: 'bold',
-  color: '#1F2937',
-  marginTop: 10,
-},
-
-modalMessage: {
-  fontSize: 15,
-  color: '#64748B',
-  marginTop: 10,
-  textAlign: 'center',
-},
-
-modalButton: {
-  backgroundColor: '#2563EB',
-  paddingVertical: 12,
-  paddingHorizontal: 40,
-  borderRadius: 8,
-  marginTop: 22,
-},
-
-modalButtonText: {
-  color: '#FFFFFF',
-  fontWeight: 'bold',
-  fontSize: 15,
-},
   },
+
+  // Success popup styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+
+  modalCard: {
+    backgroundColor: '#FFFFFF',
+    width: '100%',
+    maxWidth: 350,
+    padding: 25,
+    borderRadius: 15,
+    alignItems: 'center',
+  },
+
+  successIcon: {
+    fontSize: 42,
+    color: '#16A34A',
+    fontWeight: 'bold',
+  },
+
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    marginTop: 10,
+  },
+
+  modalMessage: {
+    fontSize: 15,
+    color: '#64748B',
+    marginTop: 10,
+    textAlign: 'center',
+  },
+
+  modalButton: {
+    backgroundColor: '#2563EB',
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    borderRadius: 8,
+    marginTop: 22,
+  },
+
+  modalButtonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+
 });
