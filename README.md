@@ -634,9 +634,7 @@ Possible future enhancements include:
 - [Live Demo](https://krishnendhu03.github.io/employee-management-system/)
 - [GitHub Repository](https://github.com/krishnendhu03/employee-management-system)
 
-18. Author
 
-Developed as a full-stack web and mobile application project to demonstrate practical skills in React.js, React Native, Redux Toolkit, Expo, REST API integration, Node.js backend development, Supabase database operations, and automated testing.
 
 
 
