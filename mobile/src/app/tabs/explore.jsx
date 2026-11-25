@@ -51,7 +51,11 @@ export default function EmployeesScreen() {
 
       const response = await API.get('/api/employees');
 
-      setEmployees(response.data);
+      const sortedEmployees = [...response.data].sort(
+  (a, b) => Number(b.id) - Number(a.id)
+);
+
+setEmployees(sortedEmployees);
     } catch (error) {
       console.log('Employee API Error:', error.message);
       setError('Unable to load employees. Please try again.');
