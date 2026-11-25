@@ -1,10 +1,25 @@
 Employee Management System
 
-A responsive full-stack Employee Management System built with React.js, Redux Toolkit, Axios, Node.js, Express.js, and Supabase PostgreSQL. The application provides a complete employee CRUD workflow with search, filtering, sorting, pagination, dashboard analytics, REST API integration, loading states, error handling, and automated testing.
+A full-stack Employee Management System featuring both a **responsive React.js web application** and a **cross-platform React Native mobile application**.
 
-1. Features
+The project is built using React.js, React Native, Redux Toolkit, Expo, Axios, Node.js, Express.js, and Supabase PostgreSQL.
 
-Employee Management
+It provides a complete employee management workflow with CRUD operations, dashboard analytics, search, filtering, sorting, pagination, REST API integration, form validation, and automated testing.
+
+1. Project Overview
+
+This project consists of two applications sharing a backend and database.
+
+| Application        | Frontend                | Backend             | Database            |
+|--------------------|-------------------------|---------------------|---------------------|
+| Web Application    | React.js, Redux Toolkit | Node.js, Express.js | Supabase PostgreSQL |
+| Mobile Application | React Native, Expo      | Node.js, Express.js | Supabase PostgreSQL |
+
+Both applications communicate with the same backend through RESTful APIs, allowing employee records to be managed from web and mobile platforms.
+
+Web Application 
+
+Features
 
 - View all employees
 - Add new employees
@@ -16,26 +31,25 @@ Employee Management
 
 Employee Listing
 
-- Search employees by:
+Search employees by:
   - Name
   - Email
   - Department
   - Designation
   - Salary
 
- Filter by employee status
-- Sort by:
+Sort employees by:
   - Name
   - Email
   - Department
   - Designation
   - Salary
   - Status
-- Pagination
-- Formatted salary display using Indian currency format
-- Status badges for Active and Inactive employees
+Pagination
+Formatted salary display using Indian currency format
+Status badges for Active and Inactive employees
 
-2. Dashboard
+Dashboard Analytics
 
 The dashboard provides an overview of employee data:
 
@@ -46,10 +60,10 @@ The dashboard provides an overview of employee data:
 - Average salary
 - Highest salary
 - Latest employee
-- Quick summary
 - Total salary
+- Quick summary
 
-3. User Experience
+User Experience
 
 - Loading indicators
 - API error handling
@@ -59,9 +73,71 @@ The dashboard provides an overview of employee data:
 - Responsive layout
 - Accessible form labels and controls
 
-4. Tech Stack
+Mobile Application – React Native
 
-Frontend
+A cross-platform mobile application developed using React Native and Expo.
+
+Features
+
+- View employee records
+- Add new employees
+- Edit employee details
+- Delete employees
+- Employee status management
+- Form validation
+- Duplicate email prevention
+
+Employee Listing
+
+- Search employees by name and email
+- Filter employees by Active and Inactive status
+- Display newest employees first
+- Employee details displayed in cards
+- Formatted salary display
+
+Dashboard
+
+- Total employee count
+- Active and inactive employee statistics
+- Department statistics
+- Salary summaries
+- Latest employee information
+
+User Experience
+
+- Interactive success popups
+- Delete confirmation modal
+- Delete success and error modals
+- Form validation messages
+- Loading indicators
+- API error handling
+- Navigation using Expo Router
+
+Mobile Application Testing
+
+The mobile application was tested using:
+
+- Expo Go
+- Chrome browser
+- Android device
+
+Verified functionality includes:
+
+- Dashboard loading
+- Employee listing and sorting
+- Search and status filtering
+- Adding employees
+- Editing employee details
+- Deleting employees
+- Duplicate email validation
+- Invalid email validation
+- Required field validation
+- Salary validation
+- Success and confirmation popups
+
+Tech Stack
+
+Web Frontend
 
 - React.js
 - JavaScript (ES6+)
@@ -69,17 +145,31 @@ Frontend
 - CSS3
 - React Router
 
+Mobile Frontend
+
+- React Native
+- Expo
+- Expo Router
+- JavaScript
+
 State Management
 
 - Redux Toolkit
 - Redux Async Thunks
+- React Hooks
 
-API & Data
+Backend
 
-- Axios
 - Node.js
 - Express.js
 - RESTful APIs
+
+API Integration
+
+- Axios
+
+Database
+
 - Supabase
 - PostgreSQL
 
@@ -89,43 +179,72 @@ Testing
 - React Testing Library
 - Jest DOM
 - User Event
+- Playwright
 
 Development Tools
 
 - Vite
 - Git
 - GitHub
-- VS Code
+- Visual Studio Code
+- Expo Go
 
-5. Project Architecture
+ 5. Project Architecture
 
-The application follows a component-based architecture with centralized state management, a dedicated Axios API service, and a Node.js/Express.js backend for RESTful API operations.
+The web and mobile applications communicate with a shared backend, which handles employee operations and database communication.
+
+Architecture Diagram
 
 
-React Components
-       |
-       v
-React Router
-       |
-       v
-Redux Toolkit
-       |
-       v
-Async Thunks
-       |
-       v
-Axios API Service
-       |
-       v
-Node.js + Express.js 
-       |
-       v
-   Supabase 
-       |
-       v
-PostgreSQL Database
+             WEB APPLICATION
+                    |
+              React.js
+                    |
+             React Router
+                    |
+             Redux Toolkit
+                    |
+              Axios API
+                    |
+                    |
+             MOBILE APPLICATION
+                    |
+              React Native
+                    |
+               Expo Router
+                    |
+                Axios API
+                    |
+                    |
+             SHARED BACKEND
+                    |
+              Node.js
+                    |
+              Express.js
+                    |
+               REST APIs
+                    |
+                 Axios
+                    |
+                Supabase
+                    |
+              PostgreSQL
 
-6. Folder Structure
+
+Request Flow
+
+Web Application:
+
+React Components → Redux Toolkit → Async Thunks → Axios → Express.js → Supabase → PostgreSQL
+
+Mobile Application:
+
+React Native Components → Expo Router → Axios → Express.js → Supabase → PostgreSQL
+
+6. Project Folder Structure
+
+The repository contains separate frontend and backend directories.
+
 
 employee-management-system/
 │
@@ -171,6 +290,22 @@ employee-management-system/
 │   ├── main.jsx
 │   └── setupTests.js
 │
+├── mobile/
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── tabs/
+│   │   │   │   ├── index.jsx
+│   │   │   │   ├── explore.jsx
+│   │   │   │   └── add.jsx
+│   │   │   │
+│   │   │   └── employees/
+│   │   │       └── [id].jsx
+│   │   │       └── layout.jsx
+│   │   └── services/
+│   │       └── api.js
+│   │
+│   └── package.json
+│
 ├── .gitignore
 ├── babel.config.cjs
 ├── jest.config.cjs
@@ -178,105 +313,89 @@ employee-management-system/
 ├── vite.config.js
 └── README.md
 
-7. Redux State Management
+Redux State Management – Web Application
 
 Employee collection data is managed using Redux Toolkit.
 
 The employee slice manages:
 
-employees
-loading
-error
+- employees – Employee records
+- loading – API request status
+- error – API error information
 
-8. CRUD operations are implemented using Redux Toolkit's createAsyncThunk:
+CRUD operations are implemented using Redux Toolkit's createAsyncThunk:
 
-fetchEmployees
-addEmployee
-updateEmployee
-deleteEmployee
+- fetchEmployees
+- addEmployee
+- updateEmployee
+- deleteEmployee
 
-Each asynchronous operation handles:
-
-Pending state
-Successful response
-API failure
-Loading state
-Error state
+Each asynchronous operation handles pending, successful, and failed API responses.
 
 This keeps API-related state transitions centralized and predictable.
 
-9. API Integration
+8. API Integration
 
-Axios is configured through a dedicated API service:
+Axios is configured through a dedicated API service.
 
+text
 src/services/api.js
 
-The React frontend communicates with the Node.js and Express.js backend through RESTful APIs.
 
-The Express backend handles employee CRUD operations and communicates with Supabase for persistent PostgreSQL data storage.
+The React and React Native frontends communicate with the Node.js and Express.js backend through RESTful APIs.
 
-| Operation       | Method | Endpoint                  |
-|-----------------|--------|---------------------------|
-| Get employees   | GET    | /api/employees            |
-| Get employee    | GET    | /api/employees/:id        |
-| Add employee    | POST   | /api/employees            |
-| Update employee | PATCH  | /api/employees/:id        |
-| Delete employee | DELETE | /api/employees/:id        |
+ API Endpoints
 
-Request flow:
+| Operation       | Method | Endpoint             |
+|-----------------|--------|----------------------|
+| Get employees   | GET    | /api/employees       |
+| Get employee    | GET    | /api/employees/:id   |
+| Add employee    | POST   | /api/employees       |
+| Update employee | PATCH  | /api/employees/:id   |
+| Delete employee | DELETE | /api/employees/:id   |
 
-React → Redux Toolkit → Axios → Express.js → Supabase → PostgreSQL
-
-10. Backend
+9. Backend
 
 The backend is implemented using Node.js and Express.js.
 
-Responsibilities include:
+Responsibilities
 
 - Handling REST API requests
 - Defining employee CRUD routes
 - Communicating with Supabase
-- Returning API responses to the React frontend
+- Returning API responses to frontend applications
 - Handling API errors
 - Managing environment-based configuration
 
-Backend API endpoints:
+The backend runs independently from both frontend applications.
 
-GET    /api/employees
-GET    /api/employees/:id
-POST   /api/employees
-PATCH  /api/employees/:id
-DELETE /api/employees/:id
+10. Database
 
-The backend runs independently from the React development server.
-
-11. Database
-
-The application uses a Supabase PostgreSQL table named:
+The project uses Supabase PostgreSQL with a table named:
 
 employees
 
-The table contains:
+Database Schema
 
-| Column      | Type    |
-|-------------|---------|
-| id          | int8    |
-| name        | text    |
-| email       | text    |
-| department  | text    |
-| designation | text    |
-| salary      | numeric |
-| status      | text    |
+| Column      | Data Type |
+|-------------|-----------|
+| id          | int8      |
+| name        | text      |
+| email       | text      |
+| department  | text      |
+| designation | text      |
+| salary      | numeric   | 
+| status      | text      |
 
 Row Level Security (RLS) is enabled for the table with policies configured for the application's demo CRUD workflow.
 
-This project uses sample employee data for demonstration purposes. Public CRUD policies should not be used for production applications containing real employee information without appropriate authentication and authorization.
+A unique database index is used to prevent duplicate email addresses.
 
-12. Testing
+**Security Note:** This project uses sample employee data for demonstration purposes. Public CRUD policies should not be used for production applications containing real employee information without appropriate authentication and authorization.
 
-The project includes automated testing using **Jest, React Testing Library, and Playwright** to ensure application functionality, component reliability, and end-to-end workflows.
+11. Testing
 
-12.1 Component Testing – Jest & React Testing Library
+11.1 Web Application – Jest & React Testing Library
 
 The test suite covers:
 
@@ -305,17 +424,17 @@ Tested operations include:
 
 Jest Test Results
 
-- Test Suites: 5 passed, 5 total
-- Tests: 20 passed, 20 total
-- Snapshots: 0 total
+Test Suites: 5 passed, 5 total
+Tests:       20 passed, 20 total
+Snapshots:   0 total
 
-Run the test suite from the React application directory:
+Run the test suite:
 
 npm test
 
-12.2 End-to-End Testing – Playwright
+11.2 Web Application – Playwright
 
-Playwright is used to automate browser-based testing of the deployed Employee Management System.
+Playwright is used to automate browser-based testing.
 
 Test Coverage
 
@@ -324,20 +443,11 @@ Test Coverage
 - Employee deletion
 - Delete confirmation and cancellation
 - Search functionality
-- Employee sorting (ascending and descending)
+- Employee sorting
 - Pagination
 - Employee API response validation
 
-Testing Tools
-
-- Playwright
-- JavaScript
-- Chromium
-- Playwright HTML Reporter
-
-Test Execution
-
-Run all Playwright tests:
+Run Playwright Tests
 
 npx playwright test --project=chromium
 
@@ -347,11 +457,28 @@ npx playwright show-report
 
 Playwright Test Results
 
-- 8 automated tests covering CRUD, search, sorting, pagination, and API functionality.
+8 automated tests covering CRUD operations, search, sorting, pagination, and API functionality.
 
+11.3 Mobile Application Testing
 
+The React Native application was tested on an Android device using Expo Go.
 
-13. Getting Started
+Verified Functionality
+
+- Dashboard
+- Employee listing
+- Employee sorting
+- Search and filtering
+- Add employee
+- Edit employee
+- Delete employee
+- Form validation
+- Duplicate email prevention
+- Interactive modals
+
+The mobile application's core workflows were also tested in Chrome.
+
+12. Getting Started
 
 Prerequisites
 
@@ -360,90 +487,129 @@ Make sure the following are installed:
 - Node.js
 - npm
 - Git
+- Supabase account
+- Expo Go (for Android mobile testing)
 
-1. Clone the repository
+Step 1: Clone the Repository
 
 git clone <https://github.com/krishnendhu03/employee-management-system>
 
-2. Navigate to the project
+Step 2: Navigate to the Project
 
 cd employee-management-system
 
-3. Install frontend dependencies
+Step 3: Install Web Application Dependencies
 
 npm install
 
-4. Install backend dependencies
+Step 4: Install Backend Dependencies
 
 cd backend
 npm install
 
-5. Configure backend environment variables
-
+Step 5: Configure Environment Variables
 Create a .env file inside the backend directory:
 
 backend/.env
+Add your Supabase credentials:
 
-Add:
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
 
-SUPABASE_URL=supabase_project_url
-SUPABASE_ANON_KEY=supabase_publishable_key
+Do not commit actual environment variables or secret credentials to GitHub.
 
-Do not commit the actual .env file to GitHub.
-
-6. Start the backend
+Step 6: Start the Backend
 
 From the backend directory:
 
 npm run dev
 
-The Express API runs on:
+The Express API runs on the configured backend port.
+
+For local development, the example API URL is:
 
 http://localhost:5000
 
-7. Start the frontend
+Step 7: Start the Web Application
 
 Open another terminal in the project root:
 
 npm run dev
 
-The application will be available at the local Vite development URL shown in the terminal.
+The application will be available at the local Vite development URL displayed in the terminal.
 
+Step 8: Start the Mobile Application
 
-14. This project demonstrates:
+Open another terminal:
 
-Component-based React development
-React Hooks
-Functional components
-Redux Toolkit state management
-Redux asynchronous thunks
-Node.js backend development
-Express.js REST API development
-Frontend-backend separation
-REST API integration
-Axios API abstraction
-Supabase integration
-PostgreSQL database integration
-React Router navigation
-Controlled form components
-Client-side validation
-Search and filtering
-Sorting and pagination
-Loading and error states
-Reusable UI components
-Automated component testing
-Redux async thunk testing
-Responsive CSS
-Environment-based configuration
-Git-based development workflow
+cd mobile
+npm install
 
-15. Production Build
+Start Expo:
 
-Create a production build with:
+npx expo start
+
+Scan the QR code using Expo Go to run the application on an Android device.
+
+For tunnel mode:
+
+npx expo start --tunnel
+
+Make sure the mobile API service is configured with a reachable backend URL.
+
+Deployment
+
+| Component       | Platform            |
+|-----------------|---------------------|
+| Web Application | GitHub Pages        |
+| Backend API     | Render              |
+| Database        | Supabase PostgreSQL |
+| Mobile Testing  | Expo Go             |
+
+The web and mobile applications use the shared backend API and Supabase database.
+
+The mobile application has been tested through Expo Go. A standalone Android APK or Google Play Store release is not currently included.
+
+14. Skills Demonstrated
+
+This project demonstrates practical experience in:
+
+- Component-based React development
+- React Native development
+- Expo and Expo Router
+- React Hooks
+- Functional components
+- Redux Toolkit state management
+- Redux asynchronous thunks
+- Node.js backend development
+- Express.js REST API development
+- Frontend-backend separation
+- REST API integration
+- Axios API abstraction
+- Supabase integration
+- PostgreSQL database integration
+- React Router navigation
+- Controlled form components
+- Client-side validation
+- Search and filtering
+- Sorting and pagination
+- Loading and error states
+- Reusable UI components
+- Automated component testing
+- Redux async thunk testing
+- End-to-end browser testing
+- Cross-platform mobile testing
+- Responsive CSS
+- Environment-based configuration
+- Git-based development workflow
+
+15. Production Build – Web Application
+
+Create an optimized production build:
 
 npm run build
 
-Preview the production build locally with:
+Preview the production build locally:
 
 npm run preview
 
@@ -451,18 +617,27 @@ npm run preview
 
 Possible future enhancements include:
 
-Authentication and role-based access control
-Server-side pagination
-Server-side filtering and sorting
-Employee profile images
-Department management
-Advanced form validation
-CI/CD pipeline
-Production-grade authorization and database policies
-Application monitoring and error logging
-Production deployment
+- Authentication and role-based access control
+- Employee profile images
+- Department management
+- Server-side pagination
+- Server-side filtering and sorting
+- Advanced form validation
+- Push notifications for mobile
+- CI/CD pipeline
+- Production-grade authorization and database policies
+- Application monitoring and error logging
+- Standalone Android application build
 
-17. Links
+- 17. Links
 
 - [Live Demo](https://krishnendhu03.github.io/employee-management-system/)
 - [GitHub Repository](https://github.com/krishnendhu03/employee-management-system)
+
+18. Author
+
+Developed as a full-stack web and mobile application project to demonstrate practical skills in React.js, React Native, Redux Toolkit, Expo, REST API integration, Node.js backend development, Supabase database operations, and automated testing.
+
+
+
+
