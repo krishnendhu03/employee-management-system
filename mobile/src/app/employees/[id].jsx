@@ -31,8 +31,9 @@ export default function EditEmployeeScreen() {
   // Loading state
   const [loading, setLoading] = useState(true);
 
-  // Email error state
+  // Validation error states
   const [emailError, setEmailError] = useState('');
+  const [salaryError, setSalaryError] = useState('');
 
   // Success popup state
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -67,17 +68,21 @@ export default function EditEmployeeScreen() {
   const handleUpdateEmployee = async () => {
     console.log('UPDATE FUNCTION STARTED');
 
+    // Clear previous errors
     setEmailError('');
+    setSalaryError('');
 
-    // Validate empty fields
+    // Validate required fields except salary
     if (
       !name.trim() ||
       !email.trim() ||
       !department.trim() ||
-      !designation.trim() ||
-      !salary.trim()
+      !designation.trim()
     ) {
-      Alert.alert('Validation Error', 'Please fill all fields.');
+      Alert.alert(
+        'Validation Error',
+        'Please fill all required fields.'
+      );
       return;
     }
 
@@ -89,12 +94,21 @@ export default function EditEmployeeScreen() {
       return;
     }
 
-    // Validate salary
-    if (!/^\d+$/.test(salary.trim()) || Number(salary) <= 0) {
-      Alert.alert(
-        'Invalid Salary',
-        'Salary must be a positive whole number.'
-      );
+    // Validate salary is required
+    if (!salary.trim()) {
+      setSalaryError('Salary is required.');
+      return;
+    }
+
+    // Validate salary contains numbers only
+    if (!/^\d+$/.test(salary.trim())) {
+      setSalaryError('Salary must contain numbers only.');
+      return;
+    }
+
+    // Validate salary is greater than zero
+    if (Number(salary) <= 0) {
+      setSalaryError('Salary must be greater than zero.');
       return;
     }
 
@@ -129,6 +143,7 @@ export default function EditEmployeeScreen() {
         return;
       }
 
+      // Handle other errors
       Alert.alert(
         'Error',
         error.response?.data?.error ||
@@ -215,11 +230,25 @@ export default function EditEmployeeScreen() {
           <Text style={styles.label}>Salary</Text>
 
           <TextInput
-            style={styles.input}
+            style={[
+              styles.input,
+              salaryError ? styles.inputError : null,
+            ]}
+            placeholder="Enter salary"
             value={salary}
-            onChangeText={setSalary}
+            onChangeText={(value) => {
+              setSalary(value);
+              setSalaryError('');
+            }}
             keyboardType="numeric"
           />
+
+          {/* Salary Error */}
+          {salaryError ? (
+            <Text style={styles.errorText}>
+              {salaryError}
+            </Text>
+          ) : null}
 
           {/* Status */}
           <Text style={styles.label}>Status</Text>
@@ -259,7 +288,7 @@ export default function EditEmployeeScreen() {
         </View>
       </ScrollView>
 
-      {/* Success Popup - Only ONE Modal */}
+      {/* Success Popup */}
       <Modal
         visible={showSuccessModal}
         transparent={true}

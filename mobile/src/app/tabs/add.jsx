@@ -22,26 +22,28 @@ export default function AddEmployeeScreen() {
   const [salary, setSalary] = useState('');
   const [status, setStatus] = useState('Active');
 
-  // Store email error message
+  // Store validation errors
   const [emailError, setEmailError] = useState('');
+  const [salaryError, setSalaryError] = useState('');
 
   // Save employee function
   const handleSaveEmployee = async () => {
     console.log('1. SAVE FUNCTION STARTED');
 
+    // Clear previous errors
     setEmailError('');
+    setSalaryError('');
 
-    // Validate empty fields
+    // Validate required fields
     if (
       !name.trim() ||
       !email.trim() ||
       !department.trim() ||
-      !designation.trim() ||
-      !salary.trim()
+      !designation.trim()
     ) {
       Alert.alert(
         'Validation Error',
-        'Please fill all fields.'
+        'Please fill all required fields.'
       );
       return;
     }
@@ -54,21 +56,21 @@ export default function AddEmployeeScreen() {
       return;
     }
 
-    // Validate salary: numbers only
-    if (!/^\d+$/.test(salary.trim())) {
-      Alert.alert(
-        'Invalid Salary',
-        'Salary must contain numbers only.'
-      );
+    // Validate salary is required
+    if (!salary.trim()) {
+      setSalaryError('Salary is required.');
       return;
     }
 
-    // Salary must be greater than zero
+    // Validate salary contains numbers only
+    if (!/^\d+$/.test(salary.trim())) {
+      setSalaryError('Salary must contain numbers only.');
+      return;
+    }
+
+    // Validate salary is greater than zero
     if (Number(salary) <= 0) {
-      Alert.alert(
-        'Invalid Salary',
-        'Salary must be greater than zero.'
-      );
+      setSalaryError('Salary must be greater than zero.');
       return;
     }
 
@@ -118,6 +120,7 @@ export default function AddEmployeeScreen() {
       setSalary('');
       setStatus('Active');
       setEmailError('');
+      setSalaryError('');
 
     } catch (error) {
       console.log('API ERROR:', error);
@@ -186,7 +189,7 @@ export default function AddEmployeeScreen() {
           autoCapitalize="none"
         />
 
-        {/* Email Error Message */}
+        {/* Email Error */}
         {emailError ? (
           <Text style={styles.errorText}>
             {emailError}
@@ -223,12 +226,25 @@ export default function AddEmployeeScreen() {
         </Text>
 
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            salaryError ? styles.inputError : null,
+          ]}
           placeholder="Enter salary"
           value={salary}
-          onChangeText={setSalary}
+          onChangeText={(value) => {
+            setSalary(value);
+            setSalaryError('');
+          }}
           keyboardType="numeric"
         />
+
+        {/* Salary Error */}
+        {salaryError ? (
+          <Text style={styles.errorText}>
+            {salaryError}
+          </Text>
+        ) : null}
 
         {/* Status */}
         <Text style={styles.label}>
@@ -274,6 +290,7 @@ export default function AddEmployeeScreen() {
 
 // Styles
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     backgroundColor: '#F3F6FA',
@@ -366,4 +383,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
+
 });
