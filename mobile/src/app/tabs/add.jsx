@@ -8,13 +8,14 @@ import {
   Pressable,
   StyleSheet,
   ScrollView,
-  Alert,
+  Modal,
 } from 'react-native';
 
+import { router } from 'expo-router';
 import API from '../../services/api';
 
 export default function AddEmployeeScreen() {
-  // Store employee form values
+  // Form values
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [department, setDepartment] = useState('');
@@ -22,33 +23,29 @@ export default function AddEmployeeScreen() {
   const [salary, setSalary] = useState('');
   const [status, setStatus] = useState('Active');
 
-  // Store validation errors
+  // Validation errors
   const [emailError, setEmailError] = useState('');
   const [salaryError, setSalaryError] = useState('');
 
-  // Save employee function
-  const handleSaveEmployee = async () => {
-    console.log('1. SAVE FUNCTION STARTED');
+  // Success popup
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-    // Clear previous errors
+  // Save employee
+  const handleSaveEmployee = async () => {
     setEmailError('');
     setSalaryError('');
 
-    // Validate required fields
+    // Required field validation
     if (
       !name.trim() ||
       !email.trim() ||
       !department.trim() ||
       !designation.trim()
     ) {
-      Alert.alert(
-        'Validation Error',
-        'Please fill all required fields.'
-      );
       return;
     }
 
-    // Validate email format
+    // Email validation
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailPattern.test(email.trim())) {
@@ -56,26 +53,23 @@ export default function AddEmployeeScreen() {
       return;
     }
 
-    // Validate salary is required
+    // Salary validation
     if (!salary.trim()) {
       setSalaryError('Salary is required.');
       return;
     }
 
-    // Validate salary contains numbers only
     if (!/^\d+$/.test(salary.trim())) {
       setSalaryError('Salary must contain numbers only.');
       return;
     }
 
-    // Validate salary is greater than zero
     if (Number(salary) <= 0) {
       setSalaryError('Salary must be greater than zero.');
       return;
     }
 
     try {
-      // Prepare employee data
       const employeeData = {
         name: name.trim(),
         email: email.trim(),
@@ -85,32 +79,12 @@ export default function AddEmployeeScreen() {
         status: status,
       };
 
-      console.log(
-        '3. Sending employee data:',
-        employeeData
-      );
-
-      // Send data to backend
       const response = await API.post(
         '/api/employees',
         employeeData
       );
 
-      console.log(
-        '4. Backend response:',
-        response.data
-      );
-
-      console.log(
-        '5. Backend status:',
-        response.status
-      );
-
-      // Show success message
-      Alert.alert(
-        'Success',
-        'Employee added successfully!'
-      );
+      console.log('Employee added:', response.data);
 
       // Clear the form
       setName('');
@@ -122,14 +96,14 @@ export default function AddEmployeeScreen() {
       setEmailError('');
       setSalaryError('');
 
+      // Show success popup
+      setShowSuccessModal(true);
+
     } catch (error) {
       console.log('API ERROR:', error);
-      console.log(
-        'API response:',
-        error.response?.data
-      );
+      console.log('API response:', error.response?.data);
 
-      // Handle duplicate email
+      // Duplicate email
       if (error.response?.status === 409) {
         setEmailError(
           'This email address already exists. Please use another email.'
@@ -137,9 +111,7 @@ export default function AddEmployeeScreen() {
         return;
       }
 
-      // Handle other errors
-      Alert.alert(
-        'Error',
+      setEmailError(
         error.response?.data?.error ||
         error.message ||
         'Unable to save employee.'
@@ -147,153 +119,189 @@ export default function AddEmployeeScreen() {
     }
   };
 
+  // Close popup and navigate
+  const handleSuccessOK = () => {
+    setShowSuccessModal(false);
+    router.replace('/tabs/explore');
+  };
+
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Add Employee</Text>
+    <View style={styles.screen}>
 
-      <Text style={styles.subtitle}>
-        Enter the employee details below
-      </Text>
+      <ScrollView
+        style={styles.container}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Text style={styles.title}>Add Employee</Text>
 
-      <View style={styles.formCard}>
-
-        {/* Employee Name */}
-        <Text style={styles.label}>
-          Employee Name
+        <Text style={styles.subtitle}>
+          Enter the employee details below
         </Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Enter employee name"
-          value={name}
-          onChangeText={setName}
-        />
+        <View style={styles.formCard}>
 
-        {/* Email */}
-        <Text style={styles.label}>
-          Email
-        </Text>
+          {/* Employee Name */}
+          <Text style={styles.label}>Employee Name</Text>
 
-        <TextInput
-          style={[
-            styles.input,
-            emailError ? styles.inputError : null,
-          ]}
-          placeholder="Enter email address"
-          value={email}
-          onChangeText={(value) => {
-            setEmail(value);
-            setEmailError('');
-          }}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter employee name"
+            value={name}
+            onChangeText={setName}
+          />
 
-        {/* Email Error */}
-        {emailError ? (
-          <Text style={styles.errorText}>
-            {emailError}
-          </Text>
-        ) : null}
+          {/* Email */}
+          <Text style={styles.label}>Email</Text>
 
-        {/* Department */}
-        <Text style={styles.label}>
-          Department
-        </Text>
+          <TextInput
+            style={[
+              styles.input,
+              emailError ? styles.inputError : null,
+            ]}
+            placeholder="Enter email address"
+            value={email}
+            onChangeText={(value) => {
+              setEmail(value);
+              setEmailError('');
+            }}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Enter department"
-          value={department}
-          onChangeText={setDepartment}
-        />
+          {emailError ? (
+            <Text style={styles.errorText}>
+              {emailError}
+            </Text>
+          ) : null}
 
-        {/* Designation */}
-        <Text style={styles.label}>
-          Designation
-        </Text>
+          {/* Department */}
+          <Text style={styles.label}>Department</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Enter designation"
-          value={designation}
-          onChangeText={setDesignation}
-        />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter department"
+            value={department}
+            onChangeText={setDepartment}
+          />
 
-        {/* Salary */}
-        <Text style={styles.label}>
-          Salary
-        </Text>
+          {/* Designation */}
+          <Text style={styles.label}>Designation</Text>
 
-        <TextInput
-          style={[
-            styles.input,
-            salaryError ? styles.inputError : null,
-          ]}
-          placeholder="Enter salary"
-          value={salary}
-          onChangeText={(value) => {
-            setSalary(value);
-            setSalaryError('');
-          }}
-          keyboardType="numeric"
-        />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter designation"
+            value={designation}
+            onChangeText={setDesignation}
+          />
 
-        {/* Salary Error */}
-        {salaryError ? (
-          <Text style={styles.errorText}>
-            {salaryError}
-          </Text>
-        ) : null}
+          {/* Salary */}
+          <Text style={styles.label}>Salary</Text>
 
-        {/* Status */}
-        <Text style={styles.label}>
-          Status
-        </Text>
+          <TextInput
+            style={[
+              styles.input,
+              salaryError ? styles.inputError : null,
+            ]}
+            placeholder="Enter salary"
+            value={salary}
+            onChangeText={(value) => {
+              setSalary(value);
+              setSalaryError('');
+            }}
+            keyboardType="numeric"
+          />
 
-        <View style={styles.statusContainer}>
-          {['Active', 'Inactive'].map((item) => (
-            <Pressable
-              key={item}
-              style={[
-                styles.statusButton,
-                status === item && styles.selectedStatus,
-              ]}
-              onPress={() => setStatus(item)}
-            >
-              <Text
+          {salaryError ? (
+            <Text style={styles.errorText}>
+              {salaryError}
+            </Text>
+          ) : null}
+
+          {/* Status */}
+          <Text style={styles.label}>Status</Text>
+
+          <View style={styles.statusContainer}>
+            {['Active', 'Inactive'].map((item) => (
+              <Pressable
+                key={item}
                 style={[
-                  styles.statusText,
-                  status === item && styles.selectedStatusText,
+                  styles.statusButton,
+                  status === item && styles.selectedStatus,
                 ]}
+                onPress={() => setStatus(item)}
               >
-                {item}
+                <Text
+                  style={[
+                    styles.statusText,
+                    status === item && styles.selectedStatusText,
+                  ]}
+                >
+                  {item}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+
+          {/* Save Button */}
+          <Pressable
+            style={styles.submitButton}
+            onPress={handleSaveEmployee}
+          >
+            <Text style={styles.submitText}>
+              Save Employee
+            </Text>
+          </Pressable>
+
+        </View>
+      </ScrollView>
+
+      {/* Success Modal */}
+      <Modal
+        visible={showSuccessModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowSuccessModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalCard}>
+
+            <Text style={styles.successIcon}>✓</Text>
+
+            <Text style={styles.modalTitle}>
+              Success!
+            </Text>
+
+            <Text style={styles.modalMessage}>
+              Employee added successfully!
+            </Text>
+
+            <Pressable
+              style={styles.modalButton}
+              onPress={handleSuccessOK}
+            >
+              <Text style={styles.modalButtonText}>
+                OK
               </Text>
             </Pressable>
-          ))}
+
+          </View>
         </View>
+      </Modal>
 
-        {/* Save Employee Button */}
-        <Pressable
-          style={styles.submitButton}
-          onPress={handleSaveEmployee}
-        >
-          <Text style={styles.submitText}>
-            Save Employee
-          </Text>
-        </Pressable>
-
-      </View>
-    </ScrollView>
+    </View>
   );
 }
 
 // Styles
 const styles = StyleSheet.create({
 
-  container: {
+  screen: {
     flex: 1,
     backgroundColor: '#F3F6FA',
+  },
+
+  container: {
+    flex: 1,
     padding: 16,
   },
 
@@ -382,6 +390,59 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+
+  modalCard: {
+    width: '100%',
+    maxWidth: 350,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 25,
+    alignItems: 'center',
+    elevation: 5,
+  },
+
+  successIcon: {
+    fontSize: 45,
+    color: '#16A34A',
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    marginBottom: 10,
+  },
+
+  modalMessage: {
+    fontSize: 15,
+    color: '#64748B',
+    textAlign: 'center',
+    marginBottom: 22,
+  },
+
+  modalButton: {
+    backgroundColor: '#2563EB',
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    borderRadius: 8,
+  },
+
+  modalButtonText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: 'bold',
   },
 
 });
